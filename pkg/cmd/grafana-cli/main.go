@@ -16,7 +16,6 @@ var version = "master"
 
 func main() {
 	setupLogging()
-
 	app := cli.NewApp()
 	app.Name = "Grafana cli"
 	app.Usage = ""
