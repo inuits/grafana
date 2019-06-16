@@ -1,8 +1,7 @@
 #! /usr/bin/env bash
 
 # Wrapper for the grafana-cli binary
-# This file serves as a wrapper for the grafana-cli binary. It ensures we set the system-wide Grafana configuration
-# that was bundled with the package as we use the binary.
+# grafana-cli.wrapper calls the grafana-cli binary with default configuration options. It ensures we set the system-wide Grafana configuration that was bundled with the Debian and RPM packages.
 
 DEFAULT=/etc/default/grafana
 
@@ -15,7 +14,7 @@ LOG_DIR=/var/log/grafana
 CONF_FILE=$CONF_DIR/grafana.ini
 PROVISIONING_CFG_DIR=$CONF_DIR/provisioning
 
-EXECUTABLE=/usr/sbin/grafana-cli.real
+EXECUTABLE=/usr/sbin/grafana-cli
 
 if [ ! -x $EXECUTABLE ]; then
  echo "Program not installed or not executable"
@@ -23,7 +22,7 @@ if [ ! -x $EXECUTABLE ]; then
 fi
 
 if [ $# -eq 0 ]; then
-  eval $EXECUTABLE --help
+  eval $EXECUTABLE
   exit 0
 fi
 
@@ -40,8 +39,6 @@ CFG_OPTS="cfg:default.paths.provisioning=$PROVISIONING_CFG_DIR \
 
 COMMAND=$1
 SUBCOMMAND=$2
-
-
 
 # We special case admin commands as is they are the only ones the that supports --homepath and --config as flags.
 if [[ $COMMAND = "admin" ]]; then

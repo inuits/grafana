@@ -272,7 +272,7 @@ func createDebPackages() {
 		initdScriptSrc:      "packaging/deb/init.d/grafana-server",
 		defaultFileSrc:      "packaging/deb/default/grafana-server",
 		systemdFileSrc:      "packaging/deb/systemd/grafana-server.service",
-		cliBinaryWrapperSrc: "packaging/wrappers/grafana-cli",
+		cliBinaryWrapperSrc: "packaging/wrappers/grafana-cli.wrapper",
 
 		depends: []string{"adduser", "libfontconfig1"},
 	})
@@ -301,7 +301,7 @@ func createRpmPackages() {
 		initdScriptSrc:      "packaging/rpm/init.d/grafana-server",
 		defaultFileSrc:      "packaging/rpm/sysconfig/grafana-server",
 		systemdFileSrc:      "packaging/rpm/systemd/grafana-server.service",
-		cliBinaryWrapperSrc: "packaging/wrappers/grafana-cli",
+		cliBinaryWrapperSrc: "packaging/wrappers/grafana-cli.wrapper",
 
 		depends: []string{"/sbin/service", "fontconfig", "freetype", "urw-fonts"},
 	})
@@ -328,13 +328,13 @@ func createPackage(options linuxPackageOptions) {
 	runPrint("mkdir", "-p", filepath.Join(packageRoot, "/usr/lib/systemd/system"))
 	runPrint("mkdir", "-p", filepath.Join(packageRoot, "/usr/sbin"))
 
-	// The grafana-cli binary is exposed through a wrapper to ensure a proper configuration is in place. To enable that, we add
-	// the .real suffix to the original binary (grafana-cli.real) and then use the name grafana-cli for the wrapper.
-	runPrint("cp", "-p", filepath.Join(workingDir, "tmp/bin/"+cliBinary), filepath.Join(packageRoot, "/usr/sbin/"+cliBinary+".real"))
-	runPrint("cp", "-p", filepath.Join(workingDir, "tmp/bin/"+serverBinary), filepath.Join(packageRoot, "/usr/sbin/"+serverBinary))
+	for _, binary := range binaries {
+		runPrint("cp", "-p", filepath.Join(workingDir, "tmp/bin/"+binary), filepath.Join(packageRoot, "/usr/sbin/"+binary))
+	}
 
-	// copy grafana-cli wrapper
-	runPrint("cp", "-p", options.cliBinaryWrapperSrc, filepath.Join(packageRoot, "/usr/sbin/"+cliBinary))
+	// The grafana-cli binary is exposed through a wrapper to ensure the package configuration is in place. To enable that, we add
+	// the .wrapper suffix to our script and place it along the original binary.
+	runPrint("cp", "-p", options.cliBinaryWrapperSrc, filepath.Join(packageRoot, "/usr/sbin/"+cliBinary+".wrapper"))
 
 	// copy init.d script
 	runPrint("cp", "-p", options.initdScriptSrc, filepath.Join(packageRoot, options.initdScriptFilePath))
