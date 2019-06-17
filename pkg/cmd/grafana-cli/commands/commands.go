@@ -114,16 +114,10 @@ var adminCommands = []cli.Command{
 		Flags:  dbCommandFlags,
 	},
 	{
-		Name:  "data-migration",
-		Usage: "Runs a script that migrates or cleanups data in your db",
-		Subcommands: []cli.Command{
-			{
-				Name:   "encrypt-datasource-passwords",
-				Usage:  "Migrates passwords from unsecured fields to secure_json_data field. Return ok unless there is an error. Safe to execute multiple times.",
-				Action: runDbCommand(datamigrations.EncryptDatasourcePaswords),
-				Flags:  dbCommandFlags,
-			},
-		},
+		Name:   "encrypt-datasource-passwords",
+		Usage:  "Migrates passwords from unsecured fields to secure_json_data field. Return ok unless there is an error. Safe to execute multiple times.",
+		Action: runDbCommand(datamigrations.EncryptDatasourcePaswords),
+		Flags:  dbCommandFlags,
 	},
 }
 
