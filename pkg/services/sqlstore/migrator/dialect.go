@@ -48,6 +48,8 @@ type Dialect interface {
 	NoOpSql() string
 
 	IsUniqueConstraintViolation(err error) bool
+
+	ToTimestamp(d1 string) string
 }
 
 func NewDialect(engine *xorm.Engine) Dialect {

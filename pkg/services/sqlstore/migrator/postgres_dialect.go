@@ -147,3 +147,12 @@ func (db *Postgres) IsUniqueConstraintViolation(err error) bool {
 
 	return false
 }
+
+func (db *Postgres) ToTimestamp(d1 string) string {
+	isColumnName := !strings.HasPrefix(d1, "'")
+	if isColumnName {
+		return d1
+	}
+	format := "YYYY-MM-DD\"T\"HH24:MI:SS"
+	return "TO_TIMESTAMP(" + d1 + ", '" + format + "')"
+}

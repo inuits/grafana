@@ -94,3 +94,8 @@ func (db *Sqlite3) IsUniqueConstraintViolation(err error) bool {
 
 	return false
 }
+
+func (db *Sqlite3) ToTimestamp(d1 string) string {
+	format := "%s"
+	return "strftime('" + format + "', " + d1 + ")"
+}

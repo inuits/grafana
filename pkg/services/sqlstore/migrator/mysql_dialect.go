@@ -143,3 +143,7 @@ func (db *Mysql) IsUniqueConstraintViolation(err error) bool {
 
 	return false
 }
+
+func (db *Mysql) ToTimestamp(d1 string) string {
+	return "UNIX_TIMESTAMP(" + d1 + ")"
+}
